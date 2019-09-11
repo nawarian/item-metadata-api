@@ -19,11 +19,20 @@ class Metadata
 
     public function publicationDate(): DateTimeInterface
     {
-        return DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $this->metadata['publicdate']);
+        return DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $this->publicdate);
+    }
+
+    public function __get($name)
+    {
+        return $this->__call($name, null);
     }
 
     public function __call($name, $arguments)
     {
+        if (true === method_exists($this, $name)) {
+            return call_user_func([$this, $name]);
+        }
+
         if (true === array_key_exists($name, $this->metadata)) {
             return $this->metadata[$name];
         }

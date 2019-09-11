@@ -6,6 +6,7 @@ namespace ArchiveOrg\ItemMetadata;
 
 use ArchiveOrg\ItemMetadata\Exceptions\ItemNotFoundException;
 use ArchiveOrg\ItemMetadata\Factory\PsrRequestInterface;
+use ArchiveOrg\ItemMetadata\Item\Identifier;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -35,7 +36,9 @@ class ClientTest extends TestCase
         $jsonResponse = '{"result":{"identifier":"nawarian-test","publicdate":"2019-02-19 20:00:38","title":"nawarian-test","mediatype":"data","collection":"opensource","uploader":"nawarian@gmail.com","addeddate":"2019-02-19 20:00:38","curation":"[curator]validator@archive.org[/curator][date]20190219200101[/date][comment]checked for malware[/comment]"}}';
 
         $this->fakeRequestFactory->shouldReceive('newMetadataRequest')
-            ->with('nawarian-test')
+            ->with(Mockery::on(function (Identifier $identifier) {
+                return (string) Identifier::newFromIdentifierString('nawarian-test') === (string) $identifier;
+            }))
             ->once()
             ->andReturn(
                 $this->createRequestObject('GET', 'https://archive.org/metadata/nawarian-test/metadata')
@@ -54,7 +57,8 @@ class ClientTest extends TestCase
     {
         $this->givenGetMetadataByIdentifierReceivesNawarianTestAsIdentifier();
 
-        $metadata = $this->client->getMetadataByIdentifier('nawarian-test');
+        $identifier = Identifier::newFromIdentifierString('nawarian-test');
+        $metadata = $this->client->getMetadataByIdentifier($identifier);
 
         $this->assertEquals('nawarian-test', $metadata->identifier());
         $this->assertEquals('2019-02-19 20:00:38', $metadata->publicationDate()->format('Y-m-d H:i:s'));
@@ -63,7 +67,11 @@ class ClientTest extends TestCase
     private function givenGetMetadataByIdentifierReceivesHopefullyInexistentIdentifierAsIdentifier(): void
     {
         $this->fakeRequestFactory->shouldReceive('newMetadataRequest')
-            ->with('hopefully-inexistent-identifier')
+            ->with(Mockery::on(function (Identifier $identifier) {
+                $expectedIdentifier = Identifier::newFromIdentifierString('hopefully-inexistent-identifier');
+
+                return (string) $expectedIdentifier === (string) $identifier;
+            }))
             ->once()
             ->andReturn(
                 $this->createRequestObject(
@@ -89,7 +97,9 @@ class ClientTest extends TestCase
         $this->expectException(ItemNotFoundException::class);
         $this->expectExceptionMessage("Item 'hopefully-inexistent-identifier' not found.");
 
-        $this->client->getMetadataByIdentifier('hopefully-inexistent-identifier');
+        $this->client->getMetadataByIdentifier(
+            Identifier::newFromIdentifierString('hopefully-inexistent-identifier')
+        );
     }
 
     private function createRequestObject(string $method, string $uri): RequestInterface

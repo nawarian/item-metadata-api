@@ -6,6 +6,7 @@ namespace ArchiveOrg\ItemMetadata;
 
 use ArchiveOrg\ItemMetadata\Exceptions\ItemNotFoundException;
 use ArchiveOrg\ItemMetadata\Factory\PsrRequestInterface;
+use ArchiveOrg\ItemMetadata\Item\Identifier;
 use Psr\Http\Client\ClientInterface;
 
 class Client
@@ -20,7 +21,7 @@ class Client
         $this->requestFactory = $requestFactory;
     }
 
-    public function getMetadataByIdentifier(string $identifier): Metadata
+    public function getMetadataByIdentifier(Identifier $identifier): Metadata
     {
         $response = $this->httpClient->sendRequest($this->requestFactory->newMetadataRequest($identifier));
 

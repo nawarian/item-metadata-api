@@ -1,0 +1,24 @@
+{
+    "name": "nawarian/item-metadata-api",
+    "description": "A php api for Archive.Org's Item Metadata API",
+    "type": "library",
+    "require": {},
+    "require-dev": {
+        "php": ">=7.2",
+        "phpunit/phpunit": "^8.3",
+        "mockery/mockery": "^1.2"
+    },
+    "license": "GPL3-or-later",
+    "authors": [
+        {
+            "name": "Níckolas Da Silva",
+            "email": "nickolas@phpsp.org.br"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "ArchiveOrg\\ItemMetadata\\": "src/"
+        }
+    }
+}

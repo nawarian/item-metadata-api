@@ -4,22 +4,15 @@ declare(strict_types=1);
 
 namespace ArchiveOrg\ItemMetadata;
 
-use DateTimeInterface;
-
 class Client
 {
-    public function getMetadataByIdentifier(string $identifier): object
-    {
-        return new class {
-            public function getIdentifier(): string
-            {
-                return 'nawarian-test';
-            }
+    private const METADATA_URL = 'https://archive.org/metadata/%s/metadata';
 
-            public function getPublicationDate(): DateTimeInterface
-            {
-                return new \DateTime('2019-02-19 20:00:38');
-            }
-        };
+    public function getMetadataByIdentifier(string $identifier): Metadata
+    {
+        $metadata = file_get_contents(sprintf(self::METADATA_URL, $identifier));
+        $parsedResult = json_decode($metadata, true)['result'] ?? [];
+
+        return new Metadata($parsedResult);
     }
 }

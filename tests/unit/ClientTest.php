@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArchiveOrg\ItemMetadata;
 
 use PHPUnit\Framework\TestCase;

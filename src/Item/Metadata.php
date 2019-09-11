@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ArchiveOrg\ItemMetadata;
+namespace ArchiveOrg\ItemMetadata\Item;
 
 use DateTimeImmutable;
 use DateTimeInterface;

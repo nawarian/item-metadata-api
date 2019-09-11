@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ArchiveOrg\ItemMetadata;
+namespace ArchiveOrg\ItemMetadata\Item;
 
 use DateTimeImmutable;
 use OutOfBoundsException;
@@ -10,7 +10,6 @@ use PHPUnit\Framework\TestCase;
 
 class MetadataTest extends TestCase
 {
-
     public function testPublicationDateFormatsDateProperly(): void
     {
         $metadata = new Metadata(['publicdate' => '2019-01-01 10:20:15']);

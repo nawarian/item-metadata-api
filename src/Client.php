@@ -7,6 +7,7 @@ namespace ArchiveOrg\ItemMetadata;
 use ArchiveOrg\ItemMetadata\Exceptions\ItemNotFoundException;
 use ArchiveOrg\ItemMetadata\Factory\PsrRequestInterface;
 use ArchiveOrg\ItemMetadata\Item\Identifier;
+use ArchiveOrg\ItemMetadata\Item\Metadata;
 use Psr\Http\Client\ClientInterface;
 
 class Client

@@ -45,4 +45,12 @@ ERROR;
             [str_repeat('n', 101), $maxLengthError],
         ];
     }
+
+    public function testEquals(): void
+    {
+        $identifier = Identifier::newFromIdentifierString('my-identifier');
+
+        $this->assertTrue($identifier->equals(Identifier::newFromIdentifierString('my-identifier')));
+        $this->assertFalse($identifier->equals(Identifier::newFromIdentifierString('not-my-identifier')));
+    }
 }

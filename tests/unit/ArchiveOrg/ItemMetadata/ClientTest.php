@@ -37,7 +37,7 @@ class ClientTest extends TestCase
 
         $this->fakeRequestFactory->shouldReceive('newMetadataRequest')
             ->with(Mockery::on(function (Identifier $identifier) {
-                return (string) Identifier::newFromIdentifierString('nawarian-test') === (string) $identifier;
+                return $identifier->equals(Identifier::newFromIdentifierString('nawarian-test'));
             }))
             ->once()
             ->andReturn(
@@ -68,9 +68,7 @@ class ClientTest extends TestCase
     {
         $this->fakeRequestFactory->shouldReceive('newMetadataRequest')
             ->with(Mockery::on(function (Identifier $identifier) {
-                $expectedIdentifier = Identifier::newFromIdentifierString('hopefully-inexistent-identifier');
-
-                return (string) $expectedIdentifier === (string) $identifier;
+                return $identifier->equals(Identifier::newFromIdentifierString('hopefully-inexistent-identifier'));
             }))
             ->once()
             ->andReturn(

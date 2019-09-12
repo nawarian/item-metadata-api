@@ -40,4 +40,9 @@ ERROR
 
         return new self($identifier);
     }
+
+    public function equals(Identifier $identifier): bool
+    {
+        return (string) $identifier === (string) $this;
+    }
 }

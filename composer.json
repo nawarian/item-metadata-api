@@ -5,7 +5,8 @@
     "require": {
         "php": ">=7.2",
         "ext-json": "*",
-        "webmozart/assert": "^1.5"
+        "webmozart/assert": "^1.5",
+        "guzzlehttp/guzzle": "^6.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.3",

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ArchiveOrg\ItemMetadata;
 
 use ArchiveOrg\ItemMetadata\Exceptions\ItemNotFoundException;
-use ArchiveOrg\ItemMetadata\Factory\PsrRequestFactory;
+use ArchiveOrg\ItemMetadata\Factory\TestPsrRequestFactory;
 use ArchiveOrg\ItemMetadata\Item\Identifier;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -20,29 +20,20 @@ class ClientTest extends TestCase
 
     private $fakeHttpClient;
 
-    private $fakeRequestFactory;
+    private $testPsrRequestFactory;
 
     protected function setUp(): void
     {
+        $this->testPsrRequestFactory = new TestPsrRequestFactory();
         $this->fakeHttpClient = Mockery::mock(ClientInterface::class);
-        $this->fakeRequestFactory = Mockery::mock(PsrRequestFactory::class);
 
-        $this->client = new Client($this->fakeHttpClient, $this->fakeRequestFactory);
+        $this->client = new Client($this->fakeHttpClient, $this->testPsrRequestFactory);
     }
 
     private function givenGetMetadataByIdentifierReceivesNawarianTestAsIdentifier(): void
     {
         // phpcs:ignore Generic.Files.LineLength.TooLong
         $jsonResponse = '{"result":{"identifier":"nawarian-test","publicdate":"2019-02-19 20:00:38","title":"nawarian-test","mediatype":"data","collection":"opensource","uploader":"nawarian@gmail.com","addeddate":"2019-02-19 20:00:38","curation":"[curator]validator@archive.org[/curator][date]20190219200101[/date][comment]checked for malware[/comment]"}}';
-
-        $this->fakeRequestFactory->shouldReceive('newMetadataRequest')
-            ->with(Mockery::on(function (Identifier $identifier) {
-                return $identifier->equals(Identifier::newFromIdentifierString('nawarian-test'));
-            }))
-            ->once()
-            ->andReturn(
-                $this->createRequestObject('GET', 'https://archive.org/metadata/nawarian-test/metadata')
-            );
 
         $this->fakeHttpClient->shouldReceive('sendRequest')
             ->with(Mockery::on(function (RequestInterface $request) {
@@ -66,18 +57,6 @@ class ClientTest extends TestCase
 
     private function givenGetMetadataByIdentifierReceivesHopefullyInexistentIdentifierAsIdentifier(): void
     {
-        $this->fakeRequestFactory->shouldReceive('newMetadataRequest')
-            ->with(Mockery::on(function (Identifier $identifier) {
-                return $identifier->equals(Identifier::newFromIdentifierString('hopefully-inexistent-identifier'));
-            }))
-            ->once()
-            ->andReturn(
-                $this->createRequestObject(
-                    'GET',
-                    'https://archive.org/metadata/hopefully-inexistent-identifier/metadata'
-                )
-            );
-
         $this->fakeHttpClient->shouldReceive('sendRequest')
             ->with(Mockery::on(function (RequestInterface $request) {
                 $expectedUri = 'https://archive.org/metadata/hopefully-inexistent-identifier/metadata';

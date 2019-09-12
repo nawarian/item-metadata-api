@@ -7,7 +7,7 @@ namespace ArchiveOrg\ItemMetadata\Factory;
 use ArchiveOrg\ItemMetadata\Item\Identifier;
 use Psr\Http\Message\RequestInterface;
 
-interface PsrRequestInterface
+interface PsrRequestFactory
 {
     public const METADATA_URL_PATTERN = 'https://archive.org/metadata/%s/metadata';
 

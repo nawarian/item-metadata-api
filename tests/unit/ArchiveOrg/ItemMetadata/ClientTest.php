@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ArchiveOrg\ItemMetadata;
 
 use ArchiveOrg\ItemMetadata\Exceptions\ItemNotFoundException;
-use ArchiveOrg\ItemMetadata\Factory\PsrRequestInterface;
+use ArchiveOrg\ItemMetadata\Factory\PsrRequestFactory;
 use ArchiveOrg\ItemMetadata\Item\Identifier;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +25,7 @@ class ClientTest extends TestCase
     protected function setUp(): void
     {
         $this->fakeHttpClient = Mockery::mock(ClientInterface::class);
-        $this->fakeRequestFactory = Mockery::mock(PsrRequestInterface::class);
+        $this->fakeRequestFactory = Mockery::mock(PsrRequestFactory::class);
 
         $this->client = new Client($this->fakeHttpClient, $this->fakeRequestFactory);
     }

@@ -10,6 +10,7 @@ use ArchiveOrg\ItemMetadata\Item\File;
 use ArchiveOrg\ItemMetadata\Item\Identifier;
 use ArchiveOrg\ItemMetadata\Item\Metadata;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class Client
@@ -26,8 +27,7 @@ class Client
 
     public function getMetadataByIdentifier(Identifier $identifier): Metadata
     {
-        $response = $this->httpClient->sendRequest($this->requestFactory->newMetadataRequest($identifier));
-        $this->failIfItemNotFound($identifier, $response);
+        $response = $this->fetchHttpResponse($identifier, $this->requestFactory->newMetadataRequest($identifier));
 
         $parsedResult = json_decode($response->getBody()->getContents(), true)['result'] ?? [];
 
@@ -36,8 +36,7 @@ class Client
 
     public function getFilesByIdentifier(Identifier $identifier): array
     {
-        $response = $this->httpClient->sendRequest($this->requestFactory->newFilesRequest($identifier));
-        $this->failIfItemNotFound($identifier, $response);
+        $response = $this->fetchHttpResponse($identifier, $this->requestFactory->newFilesRequest($identifier));
 
         $parsedResult = json_decode($response->getBody()->getContents(), true)['result'] ?? [];
 
@@ -46,10 +45,14 @@ class Client
         }, $parsedResult);
     }
 
-    private function failIfItemNotFound(Identifier $identifier, ResponseInterface $response): void
+    private function fetchHttpResponse(Identifier $identifier, RequestInterface $request): ResponseInterface
     {
+        $response = $this->httpClient->sendRequest($request);
+
         if (404 === $response->getStatusCode()) {
             throw new ItemNotFoundException("Item '{$identifier}' not found.");
         }
+
+        return $response;
     }
 }

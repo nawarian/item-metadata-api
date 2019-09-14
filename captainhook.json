@@ -16,7 +16,7 @@
                 "conditions": []
             },
             {
-                "action": "vendor/bin/phpunit -c phpunit.xml",
+                "action": "vendor/bin/phpunit -c phpunit.xml --testsuite unit",
                 "options": [],
                 "conditions": []
             },

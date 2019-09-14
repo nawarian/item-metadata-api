@@ -9,14 +9,22 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
+
     - name: Fetch composer.phar
       run: |
         wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php -- --quiet
         chmod u+x ./composer.phar
+
     - name: Install dependencies
       run: php composer.phar install
+
     - name: Code quality checks
       run: |
         php vendor/bin/phpcs --standard=psr12 src/ tests/
-        php vendor/bin/phpunit -c phpunit.xml
         for f in $(find src tests -name '*.php'); do php -l $f; done
+
+    - name: Unit Tests
+      run: php vendor/bin/phpunit -c phpunit.xml --testsuite unit
+
+    - name: Integration Tests
+      run: php vendor/bin/phpunit -c phpunit.xml --testsuite integration

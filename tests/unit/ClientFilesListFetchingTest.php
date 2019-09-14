@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ArchiveOrg\ItemMetadata;
 
+use ArchiveOrg\ItemMetadata\Exceptions\ItemNotFoundException;
 use ArchiveOrg\ItemMetadata\Factory\TestPsrRequestFactory;
 use ArchiveOrg\ItemMetadata\Item\Identifier;
 use DateTimeImmutable;
@@ -61,6 +62,30 @@ class ClientFilesListFetchingTest extends TestCase
         $this->assertSame('6286b0fd0282c9f24208d1f70fee97ef', $file->md5());
         $this->assertSame('7c27ba27', $file->crc32());
         $this->assertSame('7d5dadf8eb74f24960239fdb059b1a616db36856', $file->sha1());
+    }
+
+    private function givenGetMetadataByIdentifierReceivesHopefullyInexistentIdentifierAsIdentifier(): void
+    {
+        $this->fakeHttpClient->shouldReceive('sendRequest')
+            ->with(Mockery::on(function (RequestInterface $request) {
+                $expectedUri = 'https://archive.org/metadata/hopefully-inexistent-identifier/files';
+
+                return $request->getMethod() === 'GET' && (string) $request->getUri() === $expectedUri;
+            }))
+            ->once()
+            ->andReturn($this->createResponseObject(404));
+    }
+
+    public function testGetFilesByIdentifierWhenItemNotFound(): void
+    {
+        $this->givenGetMetadataByIdentifierReceivesHopefullyInexistentIdentifierAsIdentifier();
+
+        $this->expectException(ItemNotFoundException::class);
+        $this->expectExceptionMessage("Item 'hopefully-inexistent-identifier' not found.");
+
+        $this->client->getFilesByIdentifier(
+            Identifier::newFromIdentifierString('hopefully-inexistent-identifier')
+        );
     }
 
     private function createResponseObject(int $status, string $content = null): ResponseInterface

@@ -11,8 +11,15 @@ interface PsrRequestFactory
 {
     public const METADATA_URL_PATTERN = 'https://archive.org/metadata/%s/metadata';
 
+    public const FILES_URL_PATTERN = 'https://archive.org/metadata/%s/files';
+
     /**
      * Builds a new RequestInterface object pointing to self::METADATA_URL_PATTERN and resolved with $identifier.
      */
     public function newMetadataRequest(Identifier $identifier): RequestInterface;
+
+    /**
+     * Buils a new RequestInterface object pointing to self::FILES_URL_PATTERN and resolved with $identifier.
+     */
+    public function newFilesRequest(Identifier $identifier): RequestInterface;
 }

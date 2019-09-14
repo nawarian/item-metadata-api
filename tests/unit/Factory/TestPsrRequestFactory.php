@@ -20,4 +20,15 @@ class TestPsrRequestFactory implements PsrRequestFactory
 
         return $fakeRequest;
     }
+
+    public function newFilesRequest(Identifier $identifier): RequestInterface
+    {
+        $fakeRequest = Mockery::mock(RequestInterface::class);
+        $fakeRequest->shouldReceive('getMethod')->andReturn('GET');
+
+        $uri = "https://archive.org/metadata/{$identifier}/files";
+        $fakeRequest->shouldReceive('getUri')->andReturn($uri);
+
+        return $fakeRequest;
+    }
 }

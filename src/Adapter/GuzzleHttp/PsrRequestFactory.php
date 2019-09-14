@@ -12,9 +12,11 @@ class PsrRequestFactory implements \ArchiveOrg\ItemMetadata\Factory\PsrRequestFa
 {
     public function newMetadataRequest(Identifier $identifier): RequestInterface
     {
-        return new Request(
-            'GET',
-            sprintf(self::METADATA_URL_PATTERN, (string) $identifier)
-        );
+        return new Request('GET', sprintf(self::METADATA_URL_PATTERN, (string) $identifier));
+    }
+
+    public function newFilesRequest(Identifier $identifier): RequestInterface
+    {
+        return new Request('GET', sprintf(self::FILES_URL_PATTERN, (string) $identifier));
     }
 }

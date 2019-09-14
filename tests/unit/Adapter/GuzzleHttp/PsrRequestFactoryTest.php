@@ -18,4 +18,14 @@ class PsrRequestFactoryTest extends TestCase
         $this->assertEquals('GET', $request->getMethod());
         $this->assertEquals('https://archive.org/metadata/nawarian-test/metadata', $request->getUri());
     }
+
+    public function testNewFilesRequest(): void
+    {
+        $factory = new PsrRequestFactory();
+
+        $request = $factory->newFilesRequest(Identifier::newFromIdentifierString('nawarian-test'));
+
+        $this->assertEquals('GET', $request->getMethod());
+        $this->assertEquals('https://archive.org/metadata/nawarian-test/files', $request->getUri());
+    }
 }

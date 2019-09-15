@@ -27,6 +27,17 @@ class ClientTest extends TestCase
         $this->guzzleHttpClientAdapter = new HttpClientPsrAdapter($this->guzzleHttpClient);
         $this->client = new Client($this->guzzleHttpClientAdapter, new PsrRequestFactory());
     }
+    public function testGetItemByIdentifierWithGuzzleAdapter(): void
+    {
+        $item = $this->client->getItemByIdentifier(Identifier::newFromIdentifierString('nawarian-test'));
+
+        $this->assertSame('nawarian-test', $item->metadata()->identifier());
+        $this->assertSame('ia903000.us.archive.org', $item->server());
+        $this->assertSame('ia903000.us.archive.org', $item->d1());
+        $this->assertSame('ia803000.us.archive.org', $item->d2());
+        $this->assertSame('/5/items/nawarian-test', $item->dir());
+        $this->assertSame($item->filesCount(), $item->files()->count());
+    }
 
     public function testGetMetadataByIdentifierWithGuzzleAdapter(): void
     {

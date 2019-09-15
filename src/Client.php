@@ -9,6 +9,7 @@ use ArchiveOrg\ItemMetadata\Factory\PsrRequestFactory;
 use ArchiveOrg\ItemMetadata\Item\File;
 use ArchiveOrg\ItemMetadata\Item\FileCollection;
 use ArchiveOrg\ItemMetadata\Item\Identifier;
+use ArchiveOrg\ItemMetadata\Item\Item;
 use ArchiveOrg\ItemMetadata\Item\Metadata;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
@@ -24,6 +25,21 @@ class Client
     {
         $this->httpClient = $httpClient;
         $this->requestFactory = $requestFactory;
+    }
+
+    public function getItemByIdentifier(Identifier $identifier): Item
+    {
+        $metadata = new Metadata(['identifier' => 'nawarian-test']);
+        $files = new FileCollection([
+            File::createFromArray([
+                'name' => 'nawarian-test_meta.xml',
+                'source' => 'original',
+                'format' => 'Metadata',
+                'md5' => md5('lol'),
+            ]),
+        ]);
+
+        return new Item($metadata, $files);
     }
 
     public function getMetadataByIdentifier(Identifier $identifier): Metadata

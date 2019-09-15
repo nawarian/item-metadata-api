@@ -80,15 +80,6 @@ final class ClientMetadataFetchingTest extends TestCase
         );
     }
 
-    private function createRequestObject(string $method, string $uri): RequestInterface
-    {
-        $fakeRequest = Mockery::mock(RequestInterface::class);
-        $fakeRequest->shouldReceive('getMethod')->andReturn($method);
-        $fakeRequest->shouldReceive('getUri')->andReturn($uri);
-
-        return $fakeRequest;
-    }
-
     private function createResponseObject(int $status, string $content = null): ResponseInterface
     {
         $fakeResponse = Mockery::mock(ResponseInterface::class);

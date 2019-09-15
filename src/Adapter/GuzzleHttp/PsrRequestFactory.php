@@ -10,13 +10,23 @@ use Psr\Http\Message\RequestInterface;
 
 class PsrRequestFactory implements \ArchiveOrg\ItemMetadata\Factory\PsrRequestFactory
 {
+    public function newItemRequest(Identifier $identifier): RequestInterface
+    {
+        return $this->buildGetRequestBasedOnPattern(self::ITEM_URL_PATTERN, $identifier);
+    }
+
     public function newMetadataRequest(Identifier $identifier): RequestInterface
     {
-        return new Request('GET', sprintf(self::METADATA_URL_PATTERN, (string) $identifier));
+        return $this->buildGetRequestBasedOnPattern(self::METADATA_URL_PATTERN, $identifier);
     }
 
     public function newFilesRequest(Identifier $identifier): RequestInterface
     {
-        return new Request('GET', sprintf(self::FILES_URL_PATTERN, (string) $identifier));
+        return $this->buildGetRequestBasedOnPattern(self::FILES_URL_PATTERN, $identifier);
+    }
+
+    private function buildGetRequestBasedOnPattern(string $urlPattern, Identifier $identifier): RequestInterface
+    {
+        return new Request('GET', sprintf($urlPattern, (string) $identifier));
     }
 }

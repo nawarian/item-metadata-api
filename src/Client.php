@@ -10,7 +10,6 @@ use ArchiveOrg\ItemMetadata\Item\File;
 use ArchiveOrg\ItemMetadata\Item\FileCollection;
 use ArchiveOrg\ItemMetadata\Item\Identifier;
 use ArchiveOrg\ItemMetadata\Item\Item;
-use ArchiveOrg\ItemMetadata\Item\ItemInformation;
 use ArchiveOrg\ItemMetadata\Item\Metadata;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
@@ -33,14 +32,7 @@ class Client
         $response = $this->fetchHttpResponse($identifier, $this->requestFactory->newItemRequest($identifier));
         $parsedResult = json_decode($response->getBody()->getContents(), true) ?? [];
 
-        $information = ItemInformation::createFromArray($parsedResult);
-        $metadata = new Metadata($parsedResult['metadata'] ?? []);
-        $files = new FileCollection();
-        foreach ($parsedResult['files'] as $file) {
-            $files->add(File::createFromArray($file));
-        }
-
-        return new Item($information, $metadata, $files);
+        return Item::createFromArray($parsedResult);
     }
 
     public function getMetadataByIdentifier(Identifier $identifier): Metadata

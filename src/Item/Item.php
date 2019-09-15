@@ -4,27 +4,32 @@ declare(strict_types=1);
 
 namespace ArchiveOrg\ItemMetadata\Item;
 
-use RuntimeException;
+use DateTimeImmutable;
+use DateTimeInterface;
 
 class Item
 {
-    private $information;
-
     private $metadata;
 
     private $files;
 
-    public function __construct(ItemInformation $information, Metadata $metadata, FileCollection $files)
-    {
-        $this->information = $information;
-        $this->metadata = $metadata;
-        $this->files = $files;
-    }
+    private $server;
 
-    public function information(): ItemInformation
-    {
-        return $this->information;
-    }
+    private $workableServers;
+
+    private $d1;
+
+    private $d2;
+
+    private $dir;
+
+    private $filesCount;
+
+    private $uniq;
+
+    private $itemSize;
+
+    private $generatedAt;
 
     public function metadata(): Metadata
     {
@@ -36,12 +41,71 @@ class Item
         return $this->files;
     }
 
-    public function __call($name, $arguments)
+    public function server(): string
     {
-        if (method_exists($this->information, $name)) {
-            return call_user_func([$this->information, $name]);
+        return $this->server;
+    }
+
+    public function workableServers(): array
+    {
+        return $this->workableServers;
+    }
+
+    public function d1(): string
+    {
+        return $this->d1;
+    }
+
+    public function d2(): string
+    {
+        return $this->d2;
+    }
+
+    public function dir(): string
+    {
+        return $this->dir;
+    }
+
+    public function filesCount(): int
+    {
+        return $this->filesCount;
+    }
+
+    public function uniq(): int
+    {
+        return $this->uniq;
+    }
+
+    public function itemSize(): int
+    {
+        return $this->itemSize;
+    }
+
+    public function generatedAt(): DateTimeInterface
+    {
+        return $this->generatedAt;
+    }
+
+    public static function createFromArray(array $itemInformation): self
+    {
+        $instance = new self();
+        $instance->metadata = new Metadata($itemInformation['metadata'] ?? []);
+
+        $instance->files = new FileCollection();
+        foreach ($itemInformation['files'] as $file) {
+            $instance->files->add(File::createFromArray($file));
         }
 
-        throw new RuntimeException("Method '{$name}' doesn't exist.");
+        $instance->server = $itemInformation['server'];
+        $instance->workableServers = $itemInformation['workable_servers'];
+        $instance->d1 = $itemInformation['d1'];
+        $instance->d2 = $itemInformation['d2'];
+        $instance->dir = $itemInformation['dir'];
+        $instance->filesCount = $itemInformation['files_count'];
+        $instance->uniq = $itemInformation['uniq'];
+        $instance->itemSize = $itemInformation['item_size'];
+        $instance->generatedAt = DateTimeImmutable::createFromFormat('U', (string) $itemInformation['created']);
+
+        return $instance;
     }
 }

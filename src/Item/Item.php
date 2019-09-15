@@ -36,11 +36,6 @@ class Item
         return $this->files;
     }
 
-    public function filesCount(): int
-    {
-        return $this->files->count();
-    }
-
     public function __call($name, $arguments)
     {
         if (method_exists($this->information, $name)) {

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace ArchiveOrg\ItemMetadata\Item;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+
 class ItemInformation
 {
     private $server;
@@ -15,6 +18,14 @@ class ItemInformation
     private $d2;
 
     private $dir;
+
+    private $filesCount;
+
+    private $uniq;
+
+    private $itemSize;
+
+    private $generatedAt;
 
     public function server(): string
     {
@@ -41,6 +52,26 @@ class ItemInformation
         return $this->dir;
     }
 
+    public function filesCount(): int
+    {
+        return $this->filesCount;
+    }
+
+    public function uniq(): int
+    {
+        return $this->uniq;
+    }
+
+    public function itemSize(): int
+    {
+        return $this->itemSize;
+    }
+
+    public function generatedAt(): DateTimeInterface
+    {
+        return $this->generatedAt;
+    }
+
     public static function createFromArray(array $itemInformation): self
     {
         $instance = new self();
@@ -49,6 +80,10 @@ class ItemInformation
         $instance->d1 = $itemInformation['d1'];
         $instance->d2 = $itemInformation['d2'];
         $instance->dir = $itemInformation['dir'];
+        $instance->filesCount = $itemInformation['files_count'];
+        $instance->uniq = $itemInformation['uniq'];
+        $instance->itemSize = $itemInformation['item_size'];
+        $instance->generatedAt = DateTimeImmutable::createFromFormat('U', (string) $itemInformation['created']);
 
         return $instance;
     }

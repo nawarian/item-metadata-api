@@ -68,7 +68,7 @@ class Client
         $response = $this->httpClient->sendRequest($request);
         $rawResponse = $response->getBody()->getContents();
 
-        if (strpos($rawResponse, "Couldn't locate item '{$identifier}'") !== false) {
+        if ('{}' === $rawResponse || strpos($rawResponse, "Couldn't locate item '{$identifier}'") !== false) {
             throw new ItemNotFoundException("Item '{$identifier}' not found.");
         }
 

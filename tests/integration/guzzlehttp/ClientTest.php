@@ -39,6 +39,15 @@ class ClientTest extends TestCase
         $this->assertSame($item->filesCount(), $item->files()->count());
     }
 
+    public function testGetItemByIdentifierNotFoundWithGuzzleAdapter(): void
+    {
+        $hopefullyInexistentId = Uuid::uuid4()->toString();
+        $this->expectException(ItemNotFoundException::class);
+        $this->expectExceptionMessage("Item '{$hopefullyInexistentId}' not found.");
+
+        $this->client->getItemByIdentifier(Identifier::newFromIdentifierString($hopefullyInexistentId));
+    }
+
     public function testGetMetadataByIdentifierWithGuzzleAdapter(): void
     {
         $metadata = $this->client->getMetadataByIdentifier(

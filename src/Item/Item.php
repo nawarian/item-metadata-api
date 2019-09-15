@@ -100,9 +100,9 @@ class Item
         $instance->d1 = $itemInformation['d1'];
         $instance->d2 = $itemInformation['d2'];
         $instance->dir = $itemInformation['dir'];
-        $instance->filesCount = $itemInformation['files_count'];
-        $instance->uniq = $itemInformation['uniq'];
-        $instance->itemSize = $itemInformation['item_size'];
+        $instance->filesCount = (int) $itemInformation['files_count'];
+        $instance->uniq = (int) $itemInformation['uniq'];
+        $instance->itemSize = (int) $itemInformation['item_size'];
         $instance->generatedAt = DateTimeImmutable::createFromFormat('U', (string) $itemInformation['created']);
 
         return $instance;

@@ -5,31 +5,12 @@ declare(strict_types=1);
 namespace ArchiveOrg\ItemMetadata;
 
 use ArchiveOrg\ItemMetadata\Exceptions\ItemNotFoundException;
-use ArchiveOrg\ItemMetadata\Factory\TestPsrRequestFactory;
 use ArchiveOrg\ItemMetadata\Item\Identifier;
 use Mockery;
-use PHPUnit\Framework\TestCase;
-use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 
-class ClientItemFetchingTest extends TestCase
+class ClientItemFetchingTest extends ClientTestCase
 {
-    private $client;
-
-    private $fakeHttpClient;
-
-    private $testPsrRequestFactory;
-
-    protected function setUp(): void
-    {
-        $this->testPsrRequestFactory = new TestPsrRequestFactory();
-        $this->fakeHttpClient = Mockery::mock(ClientInterface::class);
-
-        $this->client = new Client($this->fakeHttpClient, $this->testPsrRequestFactory);
-    }
-
     private function givenGetItemByIdentifierReceivesNawarianTestAsIdentifier(): void
     {
         // phpcs:ignore Generic.Files.LineLength.TooLong
@@ -82,28 +63,5 @@ class ClientItemFetchingTest extends TestCase
         $this->client->getItemByIdentifier(
             Identifier::newFromIdentifierString('hopefully-inexistent-identifier')
         );
-    }
-
-    private function createResponseObject(int $status, string $content = null): ResponseInterface
-    {
-        $fakeResponse = Mockery::mock(ResponseInterface::class);
-        $fakeResponse->shouldReceive('getStatusCode')
-            ->once()
-            ->andReturn($status);
-
-        if (null !== $content) {
-            $fakeBody = Mockery::mock(StreamInterface::class);
-            $fakeBody->shouldReceive('getContents')
-                ->once()
-                ->andReturn($content);
-
-            $fakeBody->shouldReceive('rewind');
-
-            $fakeResponse->shouldReceive('getBody')
-                ->once()
-                ->andReturn($fakeBody);
-        }
-
-        return $fakeResponse;
     }
 }

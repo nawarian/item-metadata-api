@@ -9,12 +9,13 @@ use ArchiveOrg\ItemMetadata\Factory\PsrRequestFactory;
 use ArchiveOrg\ItemMetadata\Item\File;
 use ArchiveOrg\ItemMetadata\Item\FileCollection;
 use ArchiveOrg\ItemMetadata\Item\Identifier;
+use ArchiveOrg\ItemMetadata\Item\Item;
 use ArchiveOrg\ItemMetadata\Item\Metadata;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class Client
+final class Client
 {
     private $httpClient;
 
@@ -24,6 +25,14 @@ class Client
     {
         $this->httpClient = $httpClient;
         $this->requestFactory = $requestFactory;
+    }
+
+    public function getItemByIdentifier(Identifier $identifier): Item
+    {
+        $response = $this->fetchHttpResponse($identifier, $this->requestFactory->newItemRequest($identifier));
+        $parsedResult = json_decode($response->getBody()->getContents(), true) ?? [];
+
+        return Item::createFromArray($parsedResult);
     }
 
     public function getMetadataByIdentifier(Identifier $identifier): Metadata
@@ -53,7 +62,7 @@ class Client
         $response = $this->httpClient->sendRequest($request);
         $rawResponse = $response->getBody()->getContents();
 
-        if (strpos($rawResponse, "Couldn't locate item '{$identifier}'") !== false) {
+        if ('{}' === $rawResponse || strpos($rawResponse, "Couldn't locate item '{$identifier}'") !== false) {
             throw new ItemNotFoundException("Item '{$identifier}' not found.");
         }
 

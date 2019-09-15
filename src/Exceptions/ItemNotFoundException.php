@@ -6,6 +6,6 @@ namespace ArchiveOrg\ItemMetadata\Exceptions;
 
 use RuntimeException;
 
-class ItemNotFoundException extends RuntimeException
+final class ItemNotFoundException extends RuntimeException
 {
 }

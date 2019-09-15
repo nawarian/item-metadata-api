@@ -9,7 +9,7 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class HttpClientPsrAdapter implements ClientInterface
+final class HttpClientPsrAdapter implements ClientInterface
 {
     private $guzzleClient;
 

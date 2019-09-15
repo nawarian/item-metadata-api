@@ -6,7 +6,7 @@ namespace ArchiveOrg\ItemMetadata\Item;
 
 use PHPUnit\Framework\TestCase;
 
-class FileTest extends TestCase
+final class FileTest extends TestCase
 {
     public function testCreateFromArrayWithBasicArrayData(): void
     {

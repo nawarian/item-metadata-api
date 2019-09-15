@@ -13,7 +13,7 @@ use GuzzleHttp\Client as GuzzleHttpClient;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
-class ClientTest extends TestCase
+final class ClientTest extends TestCase
 {
     private $client;
 
@@ -26,6 +26,33 @@ class ClientTest extends TestCase
         $this->guzzleHttpClient = new GuzzleHttpClient();
         $this->guzzleHttpClientAdapter = new HttpClientPsrAdapter($this->guzzleHttpClient);
         $this->client = new Client($this->guzzleHttpClientAdapter, new PsrRequestFactory());
+    }
+    public function testGetItemByIdentifierWithGuzzleAdapter(): void
+    {
+        $item = $this->client->getItemByIdentifier(Identifier::newFromIdentifierString('nawarian-test'));
+
+        $this->assertSame('nawarian-test', $item->metadata()->identifier());
+        $this->assertSame('/5/items/nawarian-test', $item->dir());
+        $this->assertSame($item->filesCount(), $item->files()->count());
+        $this->assertSame(1294034205, $item->uniq());
+        $this->assertSame(date('Y-m-d'), $item->generatedAt()->format('Y-m-d'));
+        $this->assertIsArray($item->workableServers());
+        $this->assertNotCount(0, $item->workableServers());
+        $this->assertContains($item->server(), $item->workableServers());
+        $this->assertContains($item->d1(), $item->workableServers());
+        $this->assertContains($item->d2(), $item->workableServers());
+
+        // I'm not very happy with the checks below
+        $this->assertSame(77640182, $item->itemSize());
+    }
+
+    public function testGetItemByIdentifierNotFoundWithGuzzleAdapter(): void
+    {
+        $hopefullyInexistentId = Uuid::uuid4()->toString();
+        $this->expectException(ItemNotFoundException::class);
+        $this->expectExceptionMessage("Item '{$hopefullyInexistentId}' not found.");
+
+        $this->client->getItemByIdentifier(Identifier::newFromIdentifierString($hopefullyInexistentId));
     }
 
     public function testGetMetadataByIdentifierWithGuzzleAdapter(): void

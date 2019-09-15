@@ -8,7 +8,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use OutOfBoundsException;
 
-class Metadata
+final class Metadata
 {
     private $metadata = [];
 

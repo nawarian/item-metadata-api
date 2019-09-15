@@ -6,7 +6,7 @@ namespace ArchiveOrg\ItemMetadata\Item;
 
 use Webmozart\Assert\Assert;
 
-class Identifier
+final class Identifier
 {
     private $identifier;
 

@@ -7,6 +7,7 @@ namespace ArchiveOrg\ItemMetadata;
 use ArchiveOrg\ItemMetadata\Exceptions\ItemNotFoundException;
 use ArchiveOrg\ItemMetadata\Factory\PsrRequestFactory;
 use ArchiveOrg\ItemMetadata\Item\File;
+use ArchiveOrg\ItemMetadata\Item\FileCollection;
 use ArchiveOrg\ItemMetadata\Item\Identifier;
 use ArchiveOrg\ItemMetadata\Item\Metadata;
 use Psr\Http\Client\ClientInterface;
@@ -34,15 +35,17 @@ class Client
         return new Metadata($parsedResult ?? []);
     }
 
-    public function getFilesByIdentifier(Identifier $identifier): array
+    public function getFilesByIdentifier(Identifier $identifier): FileCollection
     {
         $response = $this->fetchHttpResponse($identifier, $this->requestFactory->newFilesRequest($identifier));
 
         $parsedResult = json_decode($response->getBody()->getContents(), true)['result'] ?? [];
 
-        return array_map(function (array $file) {
+        $files = array_map(function (array $file) {
             return File::createFromArray($file);
         }, $parsedResult);
+
+        return new FileCollection($files);
     }
 
     private function fetchHttpResponse(Identifier $identifier, RequestInterface $request): ResponseInterface

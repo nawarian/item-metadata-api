@@ -32,11 +32,14 @@ class ClientTest extends TestCase
         $item = $this->client->getItemByIdentifier(Identifier::newFromIdentifierString('nawarian-test'));
 
         $this->assertSame('nawarian-test', $item->metadata()->identifier());
-        $this->assertSame('ia903000.us.archive.org', $item->server());
-        $this->assertSame('ia903000.us.archive.org', $item->d1());
-        $this->assertSame('ia803000.us.archive.org', $item->d2());
         $this->assertSame('/5/items/nawarian-test', $item->dir());
         $this->assertSame($item->filesCount(), $item->files()->count());
+
+        // I'm not very happy with the check sbelow
+        $this->assertContains($item->server(), ['ia803000.us.archive.org', 'ia903000.us.archive.org']);
+        $this->assertSame(['ia803000.us.archive.org', 'ia903000.us.archive.org'], $item->workableServers());
+        $this->assertSame('ia903000.us.archive.org', $item->d1());
+        $this->assertSame('ia803000.us.archive.org', $item->d2());
     }
 
     public function testGetItemByIdentifierNotFoundWithGuzzleAdapter(): void

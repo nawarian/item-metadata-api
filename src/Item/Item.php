@@ -4,16 +4,26 @@ declare(strict_types=1);
 
 namespace ArchiveOrg\ItemMetadata\Item;
 
+use RuntimeException;
+
 class Item
 {
+    private $information;
+
     private $metadata;
 
     private $files;
 
-    public function __construct(Metadata $metadata, FileCollection $files)
+    public function __construct(ItemInformation $information, Metadata $metadata, FileCollection $files)
     {
+        $this->information = $information;
         $this->metadata = $metadata;
         $this->files = $files;
+    }
+
+    public function information(): ItemInformation
+    {
+        return $this->information;
     }
 
     public function metadata(): Metadata
@@ -31,23 +41,12 @@ class Item
         return $this->files->count();
     }
 
-    public function server(): string
+    public function __call($name, $arguments)
     {
-        return 'ia903000.us.archive.org';
-    }
+        if (method_exists($this->information, $name)) {
+            return call_user_func([$this->information, $name]);
+        }
 
-    public function d1(): string
-    {
-        return 'ia903000.us.archive.org';
-    }
-
-    public function d2(): string
-    {
-        return 'ia803000.us.archive.org';
-    }
-
-    public function dir(): string
-    {
-        return '/5/items/nawarian-test';
+        throw new RuntimeException("Method '{$name}' doesn't exist.");
     }
 }

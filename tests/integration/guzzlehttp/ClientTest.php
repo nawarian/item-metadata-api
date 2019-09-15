@@ -26,12 +26,26 @@ class ClientTest extends TestCase
         $this->client = new Client($this->guzzleHttpClientAdapter, new PsrRequestFactory());
     }
 
-    public function testClientWithGuzzleAdapter(): void
+    public function testGetMetadataByIdentifierWithGuzzleAdapter(): void
     {
         $metadata = $this->client->getMetadataByIdentifier(
             Identifier::newFromIdentifierString('nawarian-test')
         );
 
         $this->assertEquals('nawarian-test', $metadata->identifier());
+    }
+
+    public function testGetFilesByIdentifier(): void
+    {
+        $files = $this->client->getFilesByIdentifier(Identifier::newFromIdentifierString('nawarian-test'));
+
+        $metadataXmlFile = null;
+        foreach ($files as $file) {
+            if ($file->name() === 'nawarian-test_meta.xml') {
+                $metadataXmlFile = $file;
+            }
+        }
+
+        $this->assertEquals('original', $metadataXmlFile->source());
     }
 }

@@ -34,7 +34,6 @@ final class ClientTest extends TestCase
         $this->assertSame('nawarian-test', $item->metadata()->identifier());
         $this->assertSame('/5/items/nawarian-test', $item->dir());
         $this->assertSame($item->filesCount(), $item->files()->count());
-        $this->assertSame(1294034205, $item->uniq());
         $this->assertSame(date('Y-m-d'), $item->generatedAt()->format('Y-m-d'));
         $this->assertIsArray($item->workableServers());
         $this->assertNotCount(0, $item->workableServers());
@@ -43,6 +42,7 @@ final class ClientTest extends TestCase
         $this->assertContains($item->d2(), $item->workableServers());
 
         // I'm not very happy with the checks below
+        $this->assertGreaterThan(0, $item->uniq());
         $this->assertSame(77640182, $item->itemSize());
     }
 

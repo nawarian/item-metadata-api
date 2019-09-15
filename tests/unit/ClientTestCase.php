@@ -8,6 +8,7 @@ use ArchiveOrg\ItemMetadata\Factory\TestPsrRequestFactory;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -15,9 +16,9 @@ abstract class ClientTestCase extends TestCase
 {
     protected $client;
 
-    protected $fakeHttpClient;
+    private $testPsrRequestFactory;
 
-    protected $testPsrRequestFactory;
+    private $fakeHttpClient;
 
     protected function setUp(): void
     {
@@ -27,25 +28,37 @@ abstract class ClientTestCase extends TestCase
         $this->client = new Client($this->fakeHttpClient, $this->testPsrRequestFactory);
     }
 
-    protected function createResponseObject(int $status, string $content = null): ResponseInterface
+    protected function forceFakeHttpClientResponseForUrl(
+        string $url,
+        string $method,
+        int $responseCode,
+        string $responseBody
+    ): void {
+        $this->fakeHttpClient->shouldReceive('sendRequest')
+            ->with(Mockery::on(function (RequestInterface $request) use ($url, $method) {
+                return $request->getMethod() === $method && (string) $request->getUri() === $url;
+            }))
+            ->once()
+            ->andReturn($this->createResponseObject($responseCode, $responseBody));
+    }
+
+    private function createResponseObject(int $status, string $content = null): ResponseInterface
     {
         $fakeResponse = Mockery::mock(ResponseInterface::class);
         $fakeResponse->shouldReceive('getStatusCode')
             ->once()
             ->andReturn($status);
 
-        if (null !== $content) {
-            $fakeBody = Mockery::mock(StreamInterface::class);
-            $fakeBody->shouldReceive('getContents')
-                ->once()
-                ->andReturn($content);
+        $fakeBody = Mockery::mock(StreamInterface::class);
+        $fakeResponse->shouldReceive('getBody')
+            ->once()
+            ->andReturn($fakeBody);
 
-            $fakeBody->shouldReceive('rewind');
+        $fakeBody->shouldReceive('getContents')
+            ->once()
+            ->andReturn($content);
 
-            $fakeResponse->shouldReceive('getBody')
-                ->once()
-                ->andReturn($fakeBody);
-        }
+        $fakeBody->shouldReceive('rewind');
 
         return $fakeResponse;
     }

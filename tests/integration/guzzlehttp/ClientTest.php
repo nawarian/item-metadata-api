@@ -7,9 +7,11 @@ namespace ArchiveOrg\ItemMetadata\GuzzleHttp;
 use ArchiveOrg\ItemMetadata\Adapter\GuzzleHttp\HttpClientPsrAdapter;
 use ArchiveOrg\ItemMetadata\Adapter\GuzzleHttp\PsrRequestFactory;
 use ArchiveOrg\ItemMetadata\Client;
+use ArchiveOrg\ItemMetadata\Exceptions\ItemNotFoundException;
 use ArchiveOrg\ItemMetadata\Item\Identifier;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class ClientTest extends TestCase
 {
@@ -35,7 +37,16 @@ class ClientTest extends TestCase
         $this->assertEquals('nawarian-test', $metadata->identifier());
     }
 
-    public function testGetFilesByIdentifier(): void
+    public function testGetMetadataByIdentifierNotFoundWithGuzzleAdapter(): void
+    {
+        $hopefullyInexistentId = Uuid::uuid4()->toString();
+        $this->expectException(ItemNotFoundException::class);
+        $this->expectExceptionMessage("Item '{$hopefullyInexistentId}' not found.");
+
+        $this->client->getMetadataByIdentifier(Identifier::newFromIdentifierString($hopefullyInexistentId));
+    }
+
+    public function testGetFilesByIdentifierWithGuzzleAdapter(): void
     {
         $files = $this->client->getFilesByIdentifier(Identifier::newFromIdentifierString('nawarian-test'));
 
@@ -47,5 +58,14 @@ class ClientTest extends TestCase
         }
 
         $this->assertEquals('original', $metadataXmlFile->source());
+    }
+
+    public function testGetFilesByIdentifierNotFoundWithGuzzleAdapter(): void
+    {
+        $hopefullyInexistentId = Uuid::uuid4()->toString();
+        $this->expectException(ItemNotFoundException::class);
+        $this->expectExceptionMessage("Item '{$hopefullyInexistentId}' not found.");
+
+        $this->client->getFilesByIdentifier(Identifier::newFromIdentifierString($hopefullyInexistentId));
     }
 }

@@ -57,6 +57,7 @@ class ClientMetadataFetchingTest extends TestCase
 
     private function givenGetMetadataByIdentifierReceivesHopefullyInexistentIdentifierAsIdentifier(): void
     {
+        $content = "Couldn't locate item 'hopefully-inexistent-identifier'";
         $this->fakeHttpClient->shouldReceive('sendRequest')
             ->with(Mockery::on(function (RequestInterface $request) {
                 $expectedUri = 'https://archive.org/metadata/hopefully-inexistent-identifier/metadata';
@@ -64,7 +65,7 @@ class ClientMetadataFetchingTest extends TestCase
                 return $request->getMethod() === 'GET' && (string) $request->getUri() === $expectedUri;
             }))
             ->once()
-            ->andReturn($this->createResponseObject(404));
+            ->andReturn($this->createResponseObject(200, $content));
     }
 
     public function testGetMetadataByIdentifierWhenItemNotFound(): void
@@ -100,6 +101,8 @@ class ClientMetadataFetchingTest extends TestCase
             $fakeBody->shouldReceive('getContents')
                 ->once()
                 ->andReturn($content);
+
+            $fakeBody->shouldReceive('rewind');
 
             $fakeResponse->shouldReceive('getBody')
                 ->once()

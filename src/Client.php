@@ -48,11 +48,13 @@ class Client
     private function fetchHttpResponse(Identifier $identifier, RequestInterface $request): ResponseInterface
     {
         $response = $this->httpClient->sendRequest($request);
+        $rawResponse = $response->getBody()->getContents();
 
-        if (404 === $response->getStatusCode()) {
+        if (strpos($rawResponse, "Couldn't locate item '{$identifier}'") !== false) {
             throw new ItemNotFoundException("Item '{$identifier}' not found.");
         }
 
+        $response->getBody()->rewind();
         return $response;
     }
 }

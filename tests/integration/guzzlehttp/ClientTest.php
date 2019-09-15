@@ -36,12 +36,13 @@ final class ClientTest extends TestCase
         $this->assertSame($item->filesCount(), $item->files()->count());
         $this->assertSame(1294034205, $item->uniq());
         $this->assertSame(date('Y-m-d'), $item->generatedAt()->format('Y-m-d'));
+        $this->assertIsArray($item->workableServers());
+        $this->assertNotCount(0, $item->workableServers());
+        $this->assertContains($item->server(), $item->workableServers());
+        $this->assertContains($item->d1(), $item->workableServers());
+        $this->assertContains($item->d2(), $item->workableServers());
 
         // I'm not very happy with the checks below
-        $this->assertContains($item->server(), ['ia803000.us.archive.org', 'ia903000.us.archive.org']);
-        $this->assertSame(['ia803000.us.archive.org', 'ia903000.us.archive.org'], $item->workableServers());
-        $this->assertSame('ia903000.us.archive.org', $item->d1());
-        $this->assertSame('ia803000.us.archive.org', $item->d2());
         $this->assertSame(77640182, $item->itemSize());
     }
 

@@ -29,15 +29,14 @@ class Client
 
     public function getItemByIdentifier(Identifier $identifier): Item
     {
-        $metadata = new Metadata(['identifier' => 'nawarian-test']);
-        $files = new FileCollection([
-            File::createFromArray([
-                'name' => 'nawarian-test_meta.xml',
-                'source' => 'original',
-                'format' => 'Metadata',
-                'md5' => md5('lol'),
-            ]),
-        ]);
+        $response = $this->fetchHttpResponse($identifier, $this->requestFactory->newItemRequest($identifier));
+        $parsedResult = json_decode($response->getBody()->getContents(), true) ?? [];
+
+        $metadata = new Metadata($parsedResult['metadata'] ?? []);
+        $files = new FileCollection();
+        foreach ($parsedResult['files'] as $file) {
+            $files->add(File::createFromArray($file));
+        }
 
         return new Item($metadata, $files);
     }

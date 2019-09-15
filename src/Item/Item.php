@@ -89,12 +89,11 @@ class Item
     public static function createFromArray(array $itemInformation): self
     {
         $instance = new self();
-        $instance->metadata = new Metadata($itemInformation['metadata'] ?? []);
+        $instance->metadata = new Metadata($itemInformation['metadata']);
 
-        $instance->files = new FileCollection();
-        foreach ($itemInformation['files'] as $file) {
-            $instance->files->add(File::createFromArray($file));
-        }
+        $instance->files = new FileCollection(array_map(function (array $rawFileDefinition) {
+            return File::createFromArray($rawFileDefinition);
+        }, $itemInformation['files']));
 
         $instance->server = $itemInformation['server'];
         $instance->workableServers = $itemInformation['workable_servers'];

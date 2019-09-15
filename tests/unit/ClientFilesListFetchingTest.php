@@ -15,7 +15,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
-class ClientFilesListFetchingTest extends TestCase
+final class ClientFilesListFetchingTest extends TestCase
 {
     private $client;
 

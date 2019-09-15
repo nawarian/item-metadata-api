@@ -8,7 +8,7 @@ use ArchiveOrg\ItemMetadata\Item\Identifier;
 use Mockery;
 use Psr\Http\Message\RequestInterface;
 
-class TestPsrRequestFactory implements PsrRequestFactory
+final class TestPsrRequestFactory implements PsrRequestFactory
 {
     public function newItemRequest(Identifier $identifier): RequestInterface
     {

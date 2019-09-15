@@ -6,7 +6,7 @@ namespace ArchiveOrg\ItemMetadata\Item;
 
 use Ramsey\Collection\AbstractCollection;
 
-class FileCollection extends AbstractCollection
+final class FileCollection extends AbstractCollection
 {
     public function getType(): string
     {

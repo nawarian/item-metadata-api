@@ -7,7 +7,7 @@ namespace ArchiveOrg\ItemMetadata\Item;
 use DateTimeImmutable;
 use DateTimeInterface;
 
-class File
+final class File
 {
     private $name;
 

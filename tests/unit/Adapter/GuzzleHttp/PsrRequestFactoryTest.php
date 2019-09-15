@@ -7,7 +7,7 @@ namespace ArchiveOrg\ItemMetadata\Adapter\GuzzleHttp;
 use ArchiveOrg\ItemMetadata\Item\Identifier;
 use PHPUnit\Framework\TestCase;
 
-class PsrRequestFactoryTest extends TestCase
+final class PsrRequestFactoryTest extends TestCase
 {
     public function testNewItemRequest(): void
     {

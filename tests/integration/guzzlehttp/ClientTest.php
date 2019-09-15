@@ -13,7 +13,7 @@ use GuzzleHttp\Client as GuzzleHttpClient;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
-class ClientTest extends TestCase
+final class ClientTest extends TestCase
 {
     private $client;
 

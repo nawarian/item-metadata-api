@@ -7,7 +7,7 @@ namespace ArchiveOrg\ItemMetadata\Item;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-class IdentifierTest extends TestCase
+final class IdentifierTest extends TestCase
 {
     public function testNewFromIdentifierString(): void
     {

@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace ArchiveOrg\ItemMetadata\Item;
 
-
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
-class ItemTest extends TestCase
+final class ItemTest extends TestCase
 {
     public function testGeneratedAtTransformsTimestampIntoDateTimeInterface(): void
     {

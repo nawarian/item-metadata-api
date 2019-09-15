@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class HttpClientPsrAdapterTest extends TestCase
+final class HttpClientPsrAdapterTest extends TestCase
 {
     private $httpClientPsrAdapter;
 

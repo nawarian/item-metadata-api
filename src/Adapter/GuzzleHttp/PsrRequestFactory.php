@@ -8,7 +8,7 @@ use ArchiveOrg\ItemMetadata\Item\Identifier;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
 
-class PsrRequestFactory implements \ArchiveOrg\ItemMetadata\Factory\PsrRequestFactory
+final class PsrRequestFactory implements \ArchiveOrg\ItemMetadata\Factory\PsrRequestFactory
 {
     public function newItemRequest(Identifier $identifier): RequestInterface
     {

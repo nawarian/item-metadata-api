@@ -5,14 +5,23 @@ declare(strict_types=1);
 namespace ArchiveOrg\ItemMetadata\Item;
 
 use DateTimeImmutable;
+use InvalidArgumentException;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 
 final class MetadataTest extends TestCase
 {
+    public function testConstructorFailsWithoutIdentifier(): void
+    {
+        $this->expectExceptionMessage('Invalid Metadata: No identifier provided.');
+        $this->expectException(InvalidArgumentException::class);
+
+        new Metadata([]);
+    }
+
     public function testPublicationDateFormatsDateProperly(): void
     {
-        $metadata = new Metadata(['publicdate' => '2019-01-01 10:20:15']);
+        $metadata = new Metadata(['identifier' => 'metadata-test', 'publicdate' => '2019-01-01 10:20:15']);
 
         $this->assertEquals(
             DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-01 10:20:15'),
@@ -27,7 +36,7 @@ final class MetadataTest extends TestCase
 
     public function testMagicAccessToMetadata(): void
     {
-        $metadata = new Metadata(['myMetadata' => 'nawarian']);
+        $metadata = new Metadata(['identifier' => 'metadata-test', 'myMetadata' => 'nawarian']);
 
         $this->assertEquals('nawarian', $metadata->myMetadata());
         $this->assertEquals('nawarian', $metadata->myMetadata);
@@ -35,7 +44,7 @@ final class MetadataTest extends TestCase
 
     public function testMagicAccessToMetadataThrowsExceptionWhenMetadataNotFound(): void
     {
-        $metadata = new Metadata([]);
+        $metadata = new Metadata(['identifier' => 'metadata-test']);
 
         $this->expectException(OutOfBoundsException::class);
         $this->expectExceptionMessage('Metadata key \'myMetadata\' is not available.');

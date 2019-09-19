@@ -12,7 +12,7 @@ final class ItemTest extends TestCase
     public function testGeneratedAtTransformsTimestampIntoDateTimeInterface(): void
     {
         $item = Item::createFromArray([
-            'metadata' => [],
+            'metadata' => ['identifier' => 'item-test'],
             'files' => [],
             'server' => '',
             'workable_servers' => [],

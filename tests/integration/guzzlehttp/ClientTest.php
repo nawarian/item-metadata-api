@@ -31,7 +31,7 @@ final class ClientTest extends TestCase
     {
         $item = $this->client->getItemByIdentifier(Identifier::newFromIdentifierString('nawarian-test'));
 
-        $this->assertSame('nawarian-test', $item->metadata()->identifier());
+        $this->assertSame('nawarian-test', (string) $item->metadata()->identifier());
         $this->assertSame('/5/items/nawarian-test', $item->dir());
         $this->assertSame($item->filesCount(), $item->files()->count());
         $this->assertSame(date('Y-m-d'), $item->generatedAt()->format('Y-m-d'));

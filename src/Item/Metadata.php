@@ -7,14 +7,24 @@ namespace ArchiveOrg\ItemMetadata\Item;
 use DateTimeImmutable;
 use DateTimeInterface;
 use OutOfBoundsException;
+use Webmozart\Assert\Assert;
 
 final class Metadata
 {
+    private $identifier;
+
     private $metadata = [];
 
     public function __construct(array $metadata)
     {
+        Assert::keyExists($metadata, 'identifier', 'Invalid Metadata: No identifier provided.');
         $this->metadata = $metadata;
+        $this->identifier = Identifier::newFromIdentifierString($metadata['identifier']);
+    }
+
+    public function identifier(): Identifier
+    {
+        return $this->identifier;
     }
 
     public function publicationDate(): DateTimeInterface
